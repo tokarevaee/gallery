@@ -16,13 +16,11 @@
 </template>
 
 <script>
-// import { mapActions} from 'vuex'
 export default {
   name: "FormAddImg",
   data() {
     return {
       form: {
-        // link: 'https://don16obqbay2c.cloudfront.net/frontend-test-task/gallery-images.json',
         file: '',
       },
       file: null,
@@ -31,11 +29,8 @@ export default {
     };
   },
   methods: {
-    // ...mapActions(['fetchImages']),
     handleFileUpload() {
         this.file = this.$refs.fileImage.files[0];
-         // this.file = ''
-        // console.log(this.file.type)
     },
 
     async fileToJSON(file) {
@@ -59,10 +54,9 @@ export default {
             console.log(error)
           })
         } else if (this.file.type === "image/png" || this.file.type === "image/jpeg"){
-          console.log("ошибка типа файла")
+          console.log('error')
         }
       }
-
     },
   },
 
@@ -73,7 +67,6 @@ export default {
 .input__wrapper {
   width: 100%;
   position: relative;
-  /*margin: 15px 0;*/
   text-align: center;
 }
 

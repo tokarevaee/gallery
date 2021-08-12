@@ -22,6 +22,7 @@ name: "Gallery",
   data() {
     return{
       imageList: [],
+      addImage: [],
     }
   },
 
@@ -30,13 +31,12 @@ name: "Gallery",
       let imageArrayToList = []
       imageArrayToList = [...this.imageList,...images];
       this.imageList = imageArrayToList
-      console.log(this.imageList, 'images')
     },
     galleryImagesDnD(images){
-      let imageArrayToList = []
-      imageArrayToList = [...this.imageList,...images];
-      this.imageList = imageArrayToList
-      console.log(images, 'images')
+      let newArrayImages = []
+      newArrayImages.push(images)
+      const arrayForPush = this.imageList.concat(newArrayImages)
+      this.imageList = arrayForPush;
     },
   },
 }
