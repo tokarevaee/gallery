@@ -5,7 +5,7 @@
         <input  id="input__file" type="file" ref="fileImage" class="input input__file" v-on:change="handleFileUpload()" placeholder="Вставьте ссылку на изображение или на список изображений">
         <label for="input__file" class="input__file-button">
           <span class="input__file-icon-wrapper"><img class="input__file-icon" src="@/assets/add.svg" alt="Выбрать файл" width="25"></span>
-          <span class="input__file-button-text">Выберите файл .json</span>
+          <span class="input__file-button-text"> {{ inputTextButton }} </span>
         </label>
       </div>
       <button type="submit" class="btn">
@@ -28,6 +28,11 @@ export default {
       isLoading: false,
     };
   },
+  computed: {
+    inputTextButton() {
+      return this.file ? 'Файл выбран, нажмите "Загрузить"' : 'Выберите файл .json'
+    }
+  },
   methods: {
     handleFileUpload() {
         this.file = this.$refs.fileImage.files[0];
@@ -44,12 +49,12 @@ export default {
     async submitFileHandler() {
       if(this.file) {
         if(this.file.type === "application/json") {
-          this.fileToJSON(this.file).then((response) =>{
+          await this.fileToJSON(this.file).then((response) =>{
             const { galleryImages } = response;
-            const fileJson = galleryImages
-            this.form.file = fileJson
+            this.form.file = galleryImages
             this.$emit('galleryImages', this.form.file);
             this.form.file = ''
+            this.file = null
           }).catch((error) => {
             console.log(error)
           })

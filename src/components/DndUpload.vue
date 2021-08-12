@@ -65,8 +65,6 @@ export default {
       dragAndDropCapable: false,
       files: [],
       uploadPercentage: 0,
-      uploadFilesArray: [],
-      uploadFilesJson: [],
     }
   },
 

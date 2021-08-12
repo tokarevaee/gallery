@@ -31,6 +31,7 @@ export default {
       },
       deep: true
     },
+
     imagesWrapperWidth: function () {
       this.getResizedImages()
     }
@@ -38,9 +39,6 @@ export default {
   mounted () {
     window.addEventListener('resize', this.getImagesWrapperWidth);
     this.getImagesWrapperWidth()
-
-  },
-  created() {
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.getImagesWrapperWidth);
@@ -51,8 +49,8 @@ export default {
     delImgHandler(imgIndex){
       if (imgIndex >= 0) {
         this.imageArr.splice(imgIndex, 1);
-        this.getResizedImages()
       }
+      this.getResizedImages()
     },
 
     getImagesWrapperWidth(){
@@ -70,7 +68,6 @@ export default {
           ratio: image.width / image.height,
           url: image.url
         }
-
         if (imgRatioSum > linesRatio) {
           lines.forEach(({ratio, url}) => {
             this.imageArr.push({
@@ -78,7 +75,6 @@ export default {
               url: url
             })
           })
-
           lines = [];
           imgRatioSum = 0;
         }

@@ -2,7 +2,7 @@
   <div class="container">
     <h1 class="main__title">Галерея изображений</h1>
     <FormAddImg @galleryImages="galleryImages"></FormAddImg>
-    <DndUpload @galleryImages="galleryImagesDnD"></DndUpload>
+    <DndUpload @galleryImages="galleryImages"></DndUpload>
     <GalleryList :images="imageList" ></GalleryList>
   </div>
 </template>
@@ -28,18 +28,7 @@ name: "Gallery",
 
   methods: {
     galleryImages(images){
-      let imageArrayToList = []
-      imageArrayToList = [...this.imageList,...images];
-      this.imageList = imageArrayToList
-    },
-    galleryImagesDnD(images){
       this.imageList = [...this.imageList,...images];
-      // let newArrayImages = [images]
-      // // let newArrayImages = []
-      // // newArrayImages.push(images)
-      // // const arrayForPush = this.imageList.concat(newArrayImages)
-      // this.imageList = newArrayImages;
-      console.log(this.imageList)
     },
   },
 }
