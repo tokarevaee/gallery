@@ -33,10 +33,13 @@ name: "Gallery",
       this.imageList = imageArrayToList
     },
     galleryImagesDnD(images){
-      let newArrayImages = []
-      newArrayImages.push(images)
-      const arrayForPush = this.imageList.concat(newArrayImages)
-      this.imageList = arrayForPush;
+      this.imageList = [...this.imageList,...images];
+      // let newArrayImages = [images]
+      // // let newArrayImages = []
+      // // newArrayImages.push(images)
+      // // const arrayForPush = this.imageList.concat(newArrayImages)
+      // this.imageList = newArrayImages;
+      console.log(this.imageList)
     },
   },
 }

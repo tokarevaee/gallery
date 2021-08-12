@@ -14,6 +14,50 @@
 
 <script>
 
+function readFileAsync(file) {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    const fileConstructor = {};
+    reader.onload = () => {
+      let image = new Image();
+      image.src = reader.result;
+      fileConstructor.url = image.src;
+      image.onload = function () {
+        fileConstructor.width = image.width;
+        fileConstructor.height = image.height;
+
+        resolve(fileConstructor);
+      };
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileJsonAsync(file) {
+  return new Promise((resolve) => {
+           let fileToJSON = function (file) {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader()
+              reader.onload = () => {
+                try {
+                  resolve(JSON.parse(reader.result));
+                } catch (err) {
+                  reject();
+                }
+              }
+              reader.readAsText(file);
+            })
+          };
+          fileToJSON(file).then((response) => {
+            const { galleryImages } = response;
+            resolve(galleryImages);
+          }).catch((error) => {
+            console.log(error)
+          })
+  });
+}
+
 export default {
   name: "DndUpload",
   data(){
@@ -69,60 +113,31 @@ export default {
           && 'FormData' in window
           && 'FileReader' in window;
     },
-    async submitFiles(){
-      const fileToImgArr = new Promise((resolve) => {
-      let uploadFiles = []
-      let fileConstructor = {}
-        this.files.forEach(function(file) {
-        if (file.type === "image/png" || file.type === "image/jpeg") {
-          let reader = new FileReader();
-          reader.onload = () => {
-            let image = new Image();
-            image.src = reader.result;
-            fileConstructor.url = image.src
-            image.onload = function () {
-              fileConstructor.width = image.width
-              fileConstructor.height = image.height
-            };
-          }
-          reader.readAsDataURL(file);
-          uploadFiles.push(fileConstructor)
-        } else if (file.type === "application/json") {
-          let jsonConstructorResponse = []
-           let fileToJSON = function (file) {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader()
-              reader.onload = () => {
-                try {
-                  resolve(JSON.parse(reader.result));
-                } catch (err) {
-                  reject();
-                }
-              }
-              reader.readAsText(file);
-            })
-          };
-          fileToJSON(file).then((response) => {
-            const { galleryImages } = response;
-             jsonConstructorResponse = galleryImages
-            uploadFiles.push.apply(uploadFiles, jsonConstructorResponse);
-          }).catch((error) => {
-            console.log(error)
-          })
-        }
-        resolve(uploadFiles);
-      });
-      });
-      fileToImgArr.then((response) => {
-        this.uploadFilesArray = response
-        this.$emit('galleryImages', this.uploadFilesArray);
-        this.files = []
-        this.uploadFilesArray = []
-      }).catch((error) => {
-        console.log(error);
-      });
 
-    }
+
+    async submitFiles(){
+      const fileToImgArr = async () => {
+        let uploadFiles = [];
+        for await (let file of this.files) {
+          if (file.type === "image/png" || file.type === "image/jpeg") {
+            const f = await readFileAsync(file);
+            uploadFiles.push(f);
+          } else if (file.type === "application/json") {
+            const f = await readFileJsonAsync(file);
+            uploadFiles= [...uploadFiles, ...f];
+          }
+        }
+        return uploadFiles;
+      };
+       fileToImgArr()
+          .then((response) => {
+            this.$emit("galleryImages", response);
+            this.files = [];
+            this.uploadFilesArray = [];
+          }).catch((error) => {
+            console.log(error);
+          });
+    },
   }
 }
 </script>
