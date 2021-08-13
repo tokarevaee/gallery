@@ -1,4 +1,3 @@
-# ecwid
 
 ## Project setup
 ```
