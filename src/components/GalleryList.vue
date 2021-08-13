@@ -28,7 +28,6 @@ export default {
     images: {
       handler(){
         if(this.images.length) {
-          console.log(this.images.length)
           this.getResizedImages(this.images)
         }
       },
@@ -45,7 +44,6 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.getImagesWrapperWidth);
-
   },
 
   methods: {
@@ -92,9 +90,7 @@ export default {
         return await imageArr;
       };
       fileToImgArr().then((response)=> {
-        console.log(fileToImgArr())
         this.imageArr = response
-        console.log(this.imageArr, 'this.imageArr')
       }).catch((error) => {
       console.log(error);
     });
