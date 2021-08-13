@@ -3,7 +3,7 @@
     <h1 class="main__title">Галерея изображений</h1>
     <FormAddImg @galleryImages="galleryImages"></FormAddImg>
     <DndUpload @galleryImages="galleryImages"></DndUpload>
-    <GalleryList :images="imageList" ></GalleryList>
+    <GalleryList :images="imageList" @delImg="delImgHandler"></GalleryList>
   </div>
 </template>
 
@@ -30,10 +30,9 @@ name: "Gallery",
     galleryImages(images){
       this.imageList = [...this.imageList,...images];
     },
+    delImgHandler(imgIndex) {
+        this.imageList.splice(imgIndex, 1);
+    }
   },
 }
 </script>
-
-<style scoped>
-
-</style>

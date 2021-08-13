@@ -6,7 +6,7 @@
     <ImageSpinner
         class="image__spinner"
     />
-    <img class="image__item" :data-url="item.url" :alt="'picture' + index" :width="item.width" :height="item.height">
+    <img class="image__item" :data-url="item.url" :width="item.width">
   </div>
 </template>
 
@@ -30,7 +30,6 @@ export default {
 
   methods: {
     deleteImageHandler(imgIndex) {
-      this.$el.remove()
       this.$emit('delImg', imgIndex);
     },
   },

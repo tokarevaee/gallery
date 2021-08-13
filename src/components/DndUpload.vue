@@ -25,7 +25,6 @@ function readFileAsync(file) {
       image.onload = function () {
         fileConstructor.width = image.width;
         fileConstructor.height = image.height;
-
         resolve(fileConstructor);
       };
     };

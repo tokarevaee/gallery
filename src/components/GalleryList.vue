@@ -1,6 +1,6 @@
 <template>
   <div class="gallery__list"  ref="galleryList">
-      <GalleryItem v-for="(item, index) in imageArr" :key="index" :item="item" :index="index" @delImg="delImgHandler"/>
+      <GalleryItem v-for="(item, index) in imageArr" :key="item.width && item.url" :item="item" :index="index" @delImg="delImgHandler"/>
   </div>
 </template>
 
@@ -27,13 +27,16 @@ export default {
   watch: {
     images: {
       handler(){
-        this.getResizedImages()
+        if(this.images.length) {
+          console.log(this.images.length)
+          this.getResizedImages(this.images)
+        }
       },
       deep: true
     },
 
     imagesWrapperWidth: function () {
-      this.getResizedImages()
+      this.getResizedImages(this.images)
     }
   },
   mounted () {
@@ -47,47 +50,54 @@ export default {
 
   methods: {
     delImgHandler(imgIndex){
-      if (imgIndex >= 0) {
-        this.imageArr.splice(imgIndex, 1);
-      }
-      this.getResizedImages()
+      this.$emit('delImg', imgIndex);
     },
 
     getImagesWrapperWidth(){
         this.imagesWrapperWidth = this.$refs.galleryList.clientWidth
     },
-    getResizedImages(){
-      this.imageArr = [];
-      let lines = [];
-      let imgRatioSum = 0;
-      const galleryListWidth = this.imagesWrapperWidth
-      const linesRatio = galleryListWidth / 200;
-      this.images.forEach((image, index) => {
-        imgRatioSum += image.width / image.height;
-        lines[index] = {
-          ratio: image.width / image.height,
-          url: image.url
-        }
-        if (imgRatioSum > linesRatio) {
-          lines.forEach(({ratio, url}) => {
-            this.imageArr.push({
-              width: galleryListWidth * ratio / imgRatioSum,
-              url: url
+    async getResizedImages(images){
+      const fileToImgArr = async () => {
+        let imageArr = [];
+        let lines = [];
+        let imgRatioSum = 0;
+        const galleryListWidth = this.imagesWrapperWidth
+        const linesRatio = galleryListWidth / 200;
+        for await (let [index, image] of images.entries()) {
+          imgRatioSum += image.width / image.height;
+          lines[index] = {
+            ratio: image.width / image.height,
+            url: image.url
+          }
+          if (imgRatioSum > linesRatio) {
+            lines.forEach(({ratio, url}) => {
+              imageArr.push({
+                width: galleryListWidth * ratio / imgRatioSum,
+                url: url
+              })
             })
-          })
-          lines = [];
-          imgRatioSum = 0;
-        }
-
-        if (index + 1 === this.images.length) {
-          lines.forEach(({ratio, url}) => {
-            this.imageArr.push({
-              width: galleryListWidth * ratio / linesRatio,
-              url: url
+            lines = [];
+            imgRatioSum = 0;
+          } else if (index + 1 === images.length) {
+            lines.forEach(({ratio, url}) => {
+              imageArr.push({
+                width: galleryListWidth * ratio / imgRatioSum,
+                url: url
+              })
             })
-          })
+            lines = [];
+            imgRatioSum = 0;
+          }
         }
-      });
+        return await imageArr;
+      };
+      fileToImgArr().then((response)=> {
+        console.log(fileToImgArr())
+        this.imageArr = response
+        console.log(this.imageArr, 'this.imageArr')
+      }).catch((error) => {
+      console.log(error);
+    });
     },
   },
 }
